@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sunrise & Sunset</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Georgia', 'Times New Roman', serif;
+            background: linear-gradient(-45deg, 
+                #ffafbd, #ffc3a0, #ffecd2, #fcb69f, #a8e6cf, #dcedc1, #ffd3a5);
+            background-size: 400% 400%;
+            animation: pinkGradientShift 15s ease infinite;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+            color: #5a2d4a;
+            line-height: 1.8;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        @keyframes pinkGradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 20% 80%, rgba(255, 182, 193, 0.4) 0%, transparent 50%),
+                        radial-gradient(circle at 80% 20%, rgba(255, 105, 180, 0.4) 0%, transparent 50%),
+                        radial-gradient(circle at 40% 40%, rgba(255, 192, 203, 0.3) 0%, transparent 50%);
+            animation: pinkFloat 20s ease-in-out infinite;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        @keyframes pinkFloat {
+            0%, 100% { transform: translateY(0px) rotate(0deg); opacity: 0.7; }
+            33% { transform: translateY(-20px) rotate(120deg); opacity: 0.9; }
+            66% { transform: translateY(-10px) rotate(240deg); opacity: 0.8; }
+        }
+
+        .container {
+            max-width: 900px;
+            width: 100%;
+            text-align: center;
+            animation: fadeInUp 1.5s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        h1 {
+            font-size: 3.5em;
+            font-weight: 400;
+            background: linear-gradient(45deg, #ff69b4, #ff1493, #ff69b4, #ffc0cb);
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: pinkTitleGlow 3s ease-in-out infinite alternate;
+            margin-bottom: 50px;
+            letter-spacing: 2px;
+            text-shadow: 0 0 20px rgba(255, 105, 180, 0.5);
+        }
+
+        @keyframes pinkTitleGlow {
+            0% { filter: drop-shadow(0 0 10px rgba(255, 105, 180, 0.6)); }
+            100% { filter: drop-shadow(0 0 25px rgba(255, 105, 180, 0.9)); }
+        }
+
+        .message {
+            font-size: 1.3em;
+            max-width: 800px;
+            margin: 0 auto 60px;
+            text-align: left;
+            background: rgba(255, 255, 255, 0.35);
+            backdrop-filter: blur(15px);
+            padding: 40px;
+            border-radius: 25px;
+            box-shadow: 0 20px 40px rgba(255, 105, 180, 0.2);
+            border: 1px solid rgba(255, 182, 193, 0.5);
+            animation: pinkMessageFloat 6s ease-in-out infinite;
+            position: relative;
+            overflow: hidden;
+            color: #4a1f3a;
+        }
+
+        .message::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255, 192, 203, 0.3), transparent);
+            transform: rotate(45deg);
+            animation: pinkShimmer 3s linear infinite;
+        }
+
+        @keyframes pinkShimmer {
+            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+        }
+
+        @keyframes pinkMessageFloat {
+            0%, 100% { transform: translateY(0px); box-shadow: 0 20px 40px rgba(255, 105, 180, 0.2); }
+            50% { transform: translateY(-5px); box-shadow: 0 25px 50px rgba(255, 105, 180, 0.3); }
+        }
+
+        .images {
+            display: flex;
+            gap: 30px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+
+        .image-container {
+            flex: 1;
+            min-width: 350px;
+            max-width: 450px;
+            border-radius: 25px;
+            overflow: hidden;
+            box-shadow: 0 25px 50px rgba(255, 105, 180, 0.25);
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            position: relative;
+            border: 2px solid rgba(255, 182, 193, 0.3);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .image-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, transparent 30%, rgba(255, 192, 203, 0.4) 50%, transparent 70%);
+            transform: translateX(-100%);
+            transition: transform 0.6s;
+            z-index: 2;
+        }
+
+        .image-container:hover::before {
+            transform: translateX(100%);
+        }
+
+        .image-container:hover {
+            transform: translateY(-15px) scale(1.02);
+            box-shadow: 0 35px 70px rgba(255, 105, 180, 0.4);
+            border-color: rgba(255, 105, 180, 0.6);
+        }
+
+        .image-container img {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+            display: block;
+            transition: transform 0.4s ease;
+            z-index: 1;
+        }
+
+        .image-container:hover img {
+            transform: scale(1.05);
+        }
+
+        .music-controls {
+            background: linear-gradient(45deg, #ffc0cb, #ffb6c1);
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-radius: 0 0 25px 25px;
+            position: relative;
+            z-index: 3;
+        }
+
+        .music-controls:hover {
+            background: linear-gradient(45deg, #ff69b4, #ff1493);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(255, 105, 180, 0.4);
+        }
+
+        .music-controls.playing {
+            background: linear-gradient(45deg, #ff1493, #ff69b4);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(255, 105, 180, 0.7); }
+            70% { box-shadow: 0 0 0 20px rgba(255, 105, 180, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(255, 105, 180, 0); }
+        }
+
+        .music-icon {
+            font-size: 1.2em;
+            color: #8b1a4a;
+            transition: color 0.3s ease;
+        }
+
+        .music-controls:hover .music-icon,
+        .music-controls.playing .music-icon {
+            color: white;
+        }
+
+        .image-label {
+            padding: 15px 20px;
+            font-size: 1.1em;
+            font-weight: 500;
+            color: #8b1a4a;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(255, 105, 180, 0.3);
+            margin: 0;
+            flex-grow: 1;
+        }
+
+        .image-container:hover .image-label {
+            background: linear-gradient(45deg, #ff69b4, #ff1493);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 15px 30px rgba(255, 105, 180, 0.5);
+        }
+
+        @media (max-width: 768px) {
+            h1 { font-size: 2.5em; }
+            .message { font-size: 1.1em; padding: 30px 20px; }
+            .images { flex-direction: column; align-items: center; gap: 20px; }
+            .image-container { min-width: 300px; max-width: 100%; }
+        }
+
+        @media (max-width: 480px) {
+            body { padding: 20px 15px; }
+            h1 { font-size: 2em; margin-bottom: 30px; }
+            .message { font-size: 1em; padding: 25px 15px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Sunrise & Sunset</h1>
+        
+        <div class="message">
+            <p>I saw the sunrise and sunset, and both of them made me think of you in a way I can't really explain properly, but I'll try anyway.</p>
+            
+            <p>The sunrise felt like you. It was soft, calm, and full of quiet hope, like the way you make my world feel better just by being part of it. The light slowly rising across the sky reminded me of how you slowly became such an important part of my life without me even realizing it. I kept wishing you were there with me in that moment, standing beside me in the silence, watching the sky wake up together. It would've been perfect if I could've shared that view with you, just us, no distractions, just peace and you next to me.</p>
+            
+            <p>And then the sunset… it felt different, but still about you. It was warm, emotional, and a little heavy in that way where you don't want the moment to end. The colors fading into the horizon made me think of how much I care for you, and how even when the day ends, my thoughts of you don't. I wish you were there with me too, watching the sky change colors, leaning on me while everything slowly turns quiet. I would've just held you close and told you how much you mean to me without needing anything fancy.</p>
+            
+            <p>Honestly, both moments made me realize something simple but real—you're in everything I see now. In the calm, in the light, in the endings, and in the beginnings. It's like the sky itself reminds me of you no matter what time of day it is.</p>
+            
+            <p>And I want you to know, you're not leaving. Not in my thoughts, not in my heart. I love you so much to the point where even something as simple as a sunrise or sunset turns into a reminder of you. I just wish you could've been there with me, because everything feels more complete when it's you beside me.</p>
+        </div>
+
+        <div class="images">
+            <div class="image-container" data-music="sunrise">
+                <img src="sunrise.jpg" alt="Peaceful sunrise horizon with golden soft light" onerror="this.style.display='none'">
+                <div class="image-label">Sunrise - Like You</div>
+                <div class="music-controls" onclick="toggleMusic('sunrise')">
+                    <span class="music-icon">▶️</span>
+                    <span>Play Calm Sunrise</span>
+                </div>
+                <audio id="sunrise-audio" loop>
+                    <source src="sunrise.mp3" type="audio/mpeg">
+                    Your browser does not support the audio element.
+                </audio>
+            </div>
+            
+            <div class="image-container" data-music="sunset">
+                <img src="sunset.jpg" alt="Sunset with orange, pink, purple sky fading into night" onerror="this.style.display='none'">
+                <div class="image-label">Sunset - With You</div>
+                <div class="music-controls" onclick="toggleMusic('sunset')">
+                    <span class="music-icon">▶️</span>
+                    <span>Play Warm Sunset</span>
+                </div>
+                <audio id="sunset-audio" loop>
+                    <source src="sunset.mp3" type="audio/mpeg">
+                    Your browser does not support the audio element.
+                </audio>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const audioPlayers = {
+            sunrise: document.getElementById('sunrise-audio'),
+            sunset: document.getElementById('sunset-audio')
+        };
+
+        function toggleMusic(type) {
+            const audio = audioPlayers[type];
+            const container = document.querySelector(`[data-music="${type}"]`);
+            const controls = container.querySelector('.music-controls');
+            const icon = controls.querySelector('.music-icon');
+            const text = controls.querySelector('span:last-child');
+
+            if (audio.paused) {
+                // Stop other audio first
+                Object.keys(audioPlayers).forEach(otherType => {
+                    if (otherType !== type) {
+                        const otherAudio = audioPlayers[otherType];
+                        const otherContainer = document.querySelector(`[data-music="${otherType}"]`);
+                        const otherControls = otherContainer.querySelector('.music-controls');
+                        const otherIcon = otherControls.querySelector('.music-icon');
+                        const otherText = otherControls.querySelector('span:last-child');
+                        
+                        otherAudio.pause();
+                        otherControls.classList.remove('playing');
+                        otherIcon.textContent = '▶️';
+                        otherText.textContent = otherType === 'sunrise' ? 'Play' : 'Play';
+                    }
+                });
+
+                // Play current audio
+                audio.play().then(() => {
+                    // Success - update UI
+                    controls.classList.add('playing');
+                    icon.textContent = '⏸️';
+                    text.textContent = type === 'sunrise' ? 'Pause' : 'Pause';
+                }).catch(e => {
+                    console.log('Audio play failed:', e);
+                    // Still update UI for visual feedback
+                    controls.classList.add('playing');
+                    icon.textContent = '⏸️';
+                    text.textContent = type === 'sunrise' ? 'Pause' : 'Pause';
+                });
+            } else {
+                // Pause current audio
+                audio.pause();
+                audio.currentTime = 0;
+                controls.classList.remove('playing');
+                icon.textContent = '▶️';
+                text.textContent = type === 'sunrise' ? 'Play' : 'Play';
+            }
+        }
+
+        // Reset button when audio ends (for looped audio)
+        Object.values(audioPlayers).forEach(audio => {
+            audio.addEventListener('pause', function() {
+                const container = this.closest('[data-music]');
+                if (container) {
+                    const type = container.dataset.music;
+                    const controls = container.querySelector('.music-controls');
+                    const icon = controls.querySelector('.music-icon');
+                    const text = controls.querySelector('span:last-child');
+                    
+                    if (!controls.classList.contains('playing')) {
+                        icon.textContent = '▶️';
+                        text.textContent = type === 'sunrise' ? 'Play' : 'Play';
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>
